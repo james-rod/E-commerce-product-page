@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Josefin+Sans:wght@300;400;600&family=Kumbh+Sans:wght@400;700&family=Libre+Franklin:wght@300;600;700&family=Manrope:wght@800&family=Mina&family=Montserrat:wght@500;700&family=Outfit&family=Overpass&family=Roboto:wght@400;700&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+  <title>Frontend Mentor | E-commerce product page</title>
+  <script src="script.js" defer></script>
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution { font-size: 11px; text-align: center; }
+    .attribution a { color: hsl(228, 45%, 44%); }
+  </style>
+</head>
+<body>
+ <main>
+  <div class="overlay active"></div>
+  <header>
+    <nav>
+      <img src="./images/icon-menu.svg" alt="icon menu" class="menu-btn hidden" onclick="toggleSidebar()">
+      <img src="images/logo.svg" alt="sneakers-Logo">
+      <div class="sidebar">
+        <div class="nav-list">
+          <div class="close-container">
+            <img src="./images/icon-close.svg" alt="close" class="close-btn" onclick="toggleSidebar()">
+          </div>
+          <ul>
+            <a href="#"><li>Collections</li></a>
+            <a href="#"><li>Men</li></li></a>
+            <a href="#"><li>Women</li></li></a>
+            <a href="#"><li>About</li></li></a>
+            <a href="#"><li>Contact</li></li></a>
+          </ul>
+       </div>
+      </div>
+    </nav>
+
+    <div class="icon-containers">
+      <div class="cart-Container">
+        <span id="indicator" class="indicator-design invisible">0</span>
+        <button class="cart-button">
+          <img src="images/icon-cart.svg" alt="cart-icon">
+        </button>
+        <div class="cart-warp invisible">
+          <p class="cart-heading">Cart</p>
+          <span class="divider"></span>
+          <div class="cart-content emptyCart">
+            <p>Your Cart Is Empty</p>
+
+            <!-- This will be in JavaScript
+            <div class="basket"> 
+              <img src="images/image-product-1-thumbnail.jpg" alt="thumbnail-One" class="basket-thumbnail">
+              <div>
+                <p class="item-Name">Fall Limited Edition Sneakers</p>
+                <p><span>$125.00</span> x <span>0</span> <span>0</span> </p>
+              </div>
+              <button id="delete-Button" class="delete-icon">
+                <img src="images/icon-delete.svg" alt="trash-can">
+              </button>
+            </div>
+              <button id="checkout-btn" class="checkOut invisible">Checkout</button>
+            -->
+            
+          </div>
+        </div>
+      </div>
+      <img src="images/image-avatar.png" alt="user-icon" class="userProfile-icon">
+    </div>
+
+  </header>
+
+  <span class="border-line"></span>
+
+  <div class="inner-container">
+    <section class="images-container">
+      <div class="mainImg-container">
+        <img src="images/image-product-1.jpg" alt="product-One" class="mainImg">
+      </div>
+      <div class="thumbnails">
+        <img  class="selected" src="images/image-product-1-thumbnail.jpg" alt="thumbnail-One">
+        <img  src="images/image-product-2-thumbnail.jpg" alt="thumbnail-Two">
+        <img  src="images/image-product-3-thumbnail.jpg" alt="thumbnail-Three">
+        <img  src="images/image-product-4-thumbnail.jpg" alt="thumbnail-Four">
+      </div>
+    </section>
+
+
+    <section class="purchase-Section">
+      <h3 class="title">Sneaker Company</h3>
+      <h1 class="limited-Edition">Fall Limited Edition Sneakers</h1>
+
+      <p class="description">These low-profile sneakers are your perfect casual wear companion. Featuring a 
+      durable rubber outer sole, they’ll withstand everything the weather can offer.</p>
+
+      <div class="price">
+         <div class="discount-container">
+           <p class="new-price">$125.00</p>
+           <span class="discount">50%</span>
+         </div>
+        <p class="old-price">$250.00</p>
+      </div>
+      
+      <div class="button-Container">
+        <div class="wrapper">
+          <button id="minusButton" class="btn-left"><img src="images/icon-minus.svg" alt="minusBtn"></button>
+          <span class="num">0</span>
+          <button id="plusButton" class="btn-right"><img src="images/icon-plus.svg" alt="plusBtn"></button>
+        </div>
+        <button id="addToCartBtn" class="orange-Button"><img src="images/icon-cart.svg" alt="cart-icon" class="cart-logo-icon"> Add to cart</button>
+      </div>
+      
+    </section>
+  </div>
+
+  </main>
+
+<!--lightbox design-->
+<div id="myModal" class="lightbox invisible">
+  <div class="lightbox-Container">
+    <button class="closeXBtn"><img src="images/icon-close.svg" alt="close-icon"></button>
+    <img src="images/image-product-1.jpg" alt="product-One"  class="mainImg thumb-mob">
+    <button class="previous-Btn"><img src="images/icon-previous.svg" alt="previous-Btn"></button>
+    <button class="next-btn"><img src="images/icon-next.svg" alt="next-btn"></button>
+
+    <div class="thumbnails">
+      <img src="images/image-product-1-thumbnail.jpg" alt="thumbnail-One" class="selected">
+      <img src="images/image-product-2-thumbnail.jpg" alt="thumbnail-Two">
+      <img src="images/image-product-3-thumbnail.jpg" alt="thumbnail-Three">
+      <img src="images/image-product-4-thumbnail.jpg" alt="thumbnail-Four">
+    </div>
+
+
+  </div>
+</div>
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="https://github.com/james-rod">James Flores</a>.
+  </div>
+</body>
+</html>
