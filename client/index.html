@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <title>Frontend Mentor | E-commerce product page</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script type="module" src="script.js"></script>
+  <style>
+    .attribution { font-size: 11px; text-align: center; }
+    .attribution a { color: hsl(228, 45%, 44%); }
+
+    /* Auth UI */
+    #auth-logged-in { display: flex; align-items: center; gap: 8px; }
+    #auth-user-name { font-size: 13px; font-weight: 700; }
+    #auth-logout-btn, #auth-login-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: 13px; font-weight: 700; color: hsl(220, 13%, 13%);
+    }
+    #auth-logout-btn:hover, #auth-login-btn:hover { color: hsl(26, 100%, 55%); }
+
+    /* Auth modal */
+    #auth-modal {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.5);
+    }
+    #auth-modal.invisible { display: none; }
+    .auth-modal-box {
+      background: #fff; border-radius: 12px; padding: 2rem;
+      width: min(420px, 90vw); box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    .auth-modal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+    }
+    .auth-tabs { display: flex; gap: 1rem; }
+    .auth-tabs button {
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      font-weight: 700; font-family: inherit; color: hsl(220, 13%, 13%);
+      padding-bottom: 4px; border-bottom: 2px solid transparent;
+    }
+    .auth-tabs button.active-tab { border-color: hsl(26, 100%, 55%); color: hsl(26, 100%, 55%); }
+    #auth-modal-close {
+      background: none; border: none; cursor: pointer; font-size: 20px; line-height: 1;
+    }
+    .auth-form label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; margin-top: 1rem; }
+    .auth-form input {
+      width: 100%; padding: 10px 14px; border: 1px solid hsl(220, 13%, 83%);
+      border-radius: 8px; font-family: inherit; font-size: 14px; box-sizing: border-box;
+    }
+    .auth-form input:focus { outline: none; border-color: hsl(26, 100%, 55%); }
+    .auth-submit {
+      width: 100%; margin-top: 1.5rem; padding: 14px;
+      background: hsl(26, 100%, 55%); color: #fff; border: none;
+      border-radius: 10px; font-size: 15px; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+    }
+    .auth-submit:hover { background: hsl(26, 100%, 68%); }
+    .auth-error {
+      color: hsl(0, 79%, 63%); font-size: 13px; margin-top: 8px;
+    }
+    .auth-error.hidden { display: none; }
+    .hidden { display: none !important; }
+
+    /* Payment modal */
+    #payment-modal {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.5);
+    }
+    #payment-modal.invisible { display: none; }
+  </style>
+</head>
+<body>
+ <main>
+  <div class="overlay active"></div>
+  <header>
+    <nav>
+      <img src="./images/icon-menu.svg" alt="icon menu" class="menu-btn hidden" onclick="toggleSidebar()">
+      <img src="images/logo.svg" alt="sneakers-Logo">
+      <div class="sidebar">
+        <div class="nav-list">
+          <div class="close-container">
+            <img src="./images/icon-close.svg" alt="close" class="close-btn" onclick="toggleSidebar()">
+          </div>
+          <ul>
+            <a href="#"><li>Collections</li></a>
+            <a href="#"><li>Men</li></a>
+            <a href="#"><li>Women</li></a>
+            <a href="#"><li>About</li></a>
+            <a href="#"><li>Contact</li></a>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="icon-containers">
+      <div class="cart-Container">
+        <span id="indicator" class="indicator-design invisible">0</span>
+        <button class="cart-button">
+          <img src="images/icon-cart.svg" alt="cart-icon">
+        </button>
+        <div class="cart-warp invisible">
+          <p class="cart-heading">Cart</p>
+          <span class="divider"></span>
+          <div class="cart-content emptyCart">
+            <p>Your Cart Is Empty</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auth UI -->
+      <div id="auth-logged-out">
+        <button id="auth-login-btn">Login</button>
+      </div>
+      <div id="auth-logged-in" class="hidden">
+        <span id="auth-user-name"></span>
+        <button id="auth-logout-btn">Logout</button>
+      </div>
+
+      <img src="images/image-avatar.png" alt="user-icon" class="userProfile-icon">
+    </div>
+  </header>
+
+  <span class="border-line"></span>
+
+  <div class="inner-container">
+    <section class="images-container">
+      <div class="mainImg-container">
+        <img src="images/image-product-1.jpg" alt="product-One" class="mainImg">
+      </div>
+      <div class="thumbnails">
+        <img class="selected" src="images/image-product-1-thumbnail.jpg" alt="thumbnail-One">
+        <img src="images/image-product-2-thumbnail.jpg" alt="thumbnail-Two">
+        <img src="images/image-product-3-thumbnail.jpg" alt="thumbnail-Three">
+        <img src="images/image-product-4-thumbnail.jpg" alt="thumbnail-Four">
+      </div>
+    </section>
+
+    <section class="purchase-Section">
+      <h3 class="title">Sneaker Company</h3>
+      <h1 class="limited-Edition">Fall Limited Edition Sneakers</h1>
+      <p class="description">These low-profile sneakers are your perfect casual wear companion. Featuring a
+      durable rubber outer sole, they'll withstand everything the weather can offer.</p>
+      <div class="price">
+        <div class="discount-container">
+          <p class="new-price">$125.00</p>
+          <span class="discount">50%</span>
+        </div>
+        <p class="old-price">$250.00</p>
+      </div>
+      <div class="button-Container">
+        <div class="wrapper">
+          <button id="minusButton" class="btn-left"><img src="images/icon-minus.svg" alt="minusBtn"></button>
+          <span class="num">0</span>
+          <button id="plusButton" class="btn-right"><img src="images/icon-plus.svg" alt="plusBtn"></button>
+        </div>
+        <button id="addToCartBtn" class="orange-Button">
+          <img src="images/icon-cart.svg" alt="cart-icon" class="cart-logo-icon"> Add to cart
+        </button>
+      </div>
+    </section>
+  </div>
+  </main>
+
+<!-- Lightbox -->
+<div id="myModal" class="lightbox invisible">
+  <div class="lightbox-Container">
+    <button class="closeXBtn"><img src="images/icon-close.svg" alt="close-icon"></button>
+    <img src="images/image-product-1.jpg" alt="product-One" class="mainImg thumb-mob">
+    <button class="previous-Btn"><img src="images/icon-previous.svg" alt="previous-Btn"></button>
+    <button class="next-btn"><img src="images/icon-next.svg" alt="next-btn"></button>
+    <div class="thumbnails">
+      <img src="images/image-product-1-thumbnail.jpg" alt="thumbnail-One" class="selected">
+      <img src="images/image-product-2-thumbnail.jpg" alt="thumbnail-Two">
+      <img src="images/image-product-3-thumbnail.jpg" alt="thumbnail-Three">
+      <img src="images/image-product-4-thumbnail.jpg" alt="thumbnail-Four">
+    </div>
+  </div>
+</div>
+
+<!-- Auth modal -->
+<div id="auth-modal" class="invisible">
+  <div class="auth-modal-box">
+    <div class="auth-modal-header">
+      <div class="auth-tabs">
+        <button id="auth-tab-login" class="active-tab">Login</button>
+        <button id="auth-tab-register">Register</button>
+      </div>
+      <button id="auth-modal-close">&#x2715;</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" placeholder="you@example.com" required>
+      <label for="login-password">Password</label>
+      <input id="login-password" type="password" placeholder="Password" required>
+      <p id="login-error" class="auth-error hidden"></p>
+      <button type="submit" class="auth-submit">Log In</button>
+    </form>
+
+    <form id="register-form" class="auth-form hidden">
+      <label for="register-name">Name</label>
+      <input id="register-name" type="text" placeholder="Your name" required>
+      <label for="register-email">Email</label>
+      <input id="register-email" type="email" placeholder="you@example.com" required>
+      <label for="register-password">Password</label>
+      <input id="register-password" type="password" placeholder="Password" required>
+      <p id="register-error" class="auth-error hidden"></p>
+      <button type="submit" class="auth-submit">Create Account</button>
+    </form>
+  </div>
+</div>
+
+<!-- Payment modal -->
+<div id="payment-modal" class="invisible">
+  <div class="auth-modal-box">
+    <div class="auth-modal-header">
+      <h2 style="font-size:16px;font-weight:700;">Complete Payment</h2>
+      <button id="payment-modal-close">&#x2715;</button>
+    </div>
+    <p id="payment-amount" style="font-size:13px;color:hsl(219,9%,45%);margin-bottom:1rem;"></p>
+    <div id="payment-element"></div>
+    <p id="payment-error" class="auth-error hidden" style="margin-top:8px;"></p>
+    <button id="payment-submit" class="auth-submit" style="margin-top:1.5rem;">Pay Now</button>
+  </div>
+</div>
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+    Coded by <a href="https://github.com/james-rod">James Flores</a>.
+  </div>
+</body>
+</html>
