@@ -1,4 +1,4 @@
-const BASE_URL = "/api";
+const BASE_URL = `${window.BACKEND_URL || ""}/api`;
 
 export const getToken = () => localStorage.getItem("token");
 export const setToken = (t) => localStorage.setItem("token", t);
@@ -15,6 +15,9 @@ export async function apiFetch(endpoint, options = {}) {
   });
   if (res.status === 204) return null;
   const data = await res.json();
-  if (!res.ok) throw Object.assign(new Error(data.error || "Request failed"), { status: res.status });
+  if (!res.ok)
+    throw Object.assign(new Error(data.error || "Request failed"), {
+      status: res.status,
+    });
   return data;
 }
